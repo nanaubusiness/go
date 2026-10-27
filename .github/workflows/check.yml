@@ -20,7 +20,7 @@ jobs:
           echo "$probe" | grep -q '"app":"studyforge"'
           scan=$(curl -s -o /dev/null --max-time 60 -w "%{http_code} %{redirect_url}" "$target/go/uptime-check")
           echo "scan: $scan"
-          case "$scan" in 302*"/?src=uptime-check") ;; *) exit 1 ;; esac
+          test "$scan" = "302 $target/?src=uptime-check"
           landing=$(curl -s -o /dev/null --max-time 90 -w "%{http_code}" "$target/?src=uptime-check")
           echo "landing: $landing"
           test "$landing" = 200
