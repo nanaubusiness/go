@@ -1,0 +1,26 @@
+name: check
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "17 */6 * * *"
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Printed QR link -> redirect page -> live StudyForge
+        run: |
+          set -eu
+          base=https://nanaubusiness.github.io/go
+          page=$(curl -sL "$base/uptime-check")
+          echo "$page" | grep -q "Opening StudyForge" && echo "redirect page: ok"
+          target=$(curl -sf "$base/target.json?t=$(date +%s)" | jq -r .target)
+          echo "redirect target: $target"
+          probe=$(curl -s --max-time 20 "$target/__mobile")
+          echo "app probe: $probe"
+          echo "$probe" | grep -q '"app":"studyforge"'
+          scan=$(curl -s -o /dev/null --max-time 60 -w "%{http_code} %{redirect_url}" "$target/go/uptime-check")
+          echo "scan: $scan"
+          case "$scan" in 302*"/?src=uptime-check") ;; *) exit 1 ;; esac
+          landing=$(curl -s -o /dev/null --max-time 90 -w "%{http_code}" "$target/?src=uptime-check")
+          echo "landing: $landing"
+          test "$landing" = 200
