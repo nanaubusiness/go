@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>StudyForge</title>
+<style>
+html,body{margin:0;height:100%;background:#0c2620;color:#efe9da;font:16px/1.5 system-ui,-apple-system,sans-serif}
+main{min-height:100%;display:grid;place-items:center;text-align:center;padding:24px;box-sizing:border-box}
+b{display:block;font-size:22px;letter-spacing:-.01em}
+p{margin:10px 0 0;color:#a9ae9f}
+a{color:#dcfc4b}
+i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#dcfc4b;margin-right:8px;animation:p 1s ease-in-out infinite alternate}
+@keyframes p{to{opacity:.25}}
+</style>
+</head>
+<body>
+<main><div><b><i></i>Opening StudyForge…</b><p id="msg">One moment. <a id="link" href="https://emperor-motherboard-reading-instance.trycloudflare.com">Tap here</a> if nothing happens.</p></div></main>
+<script>
+(function () {
+  var FALLBACK = "https://emperor-motherboard-reading-instance.trycloudflare.com";
+  var m = location.pathname.match(/\/go\/([a-z0-9][a-z0-9-]{0,39})\/?$/i);
+  var code = m ? m[1].toLowerCase() : "";
+  function go(t) {
+    if (!t) { document.getElementById("msg").textContent = "StudyForge is offline for a moment. Try again soon."; return; }
+    var dest = t.replace(/\/+$/, "") + (code ? "/go/" + code : "/");
+    document.getElementById("link").href = dest;
+    location.replace(dest);
+  }
+  fetch("/go/" + "target.json?t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { return r.json(); })
+    .then(function (j) { go(j.target || FALLBACK); })
+    .catch(function () { go(FALLBACK); });
+})();
+</script>
+</body>
+</html>
