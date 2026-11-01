@@ -7,17 +7,17 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Printed QR link -> redirect page -> live StudyForge
+      - name: Printed QR link -> redirect page -> live Lessicon
         run: |
           set -eu
           base=https://nanaubusiness.github.io/go
           page=$(curl -sL "$base/uptime-check")
-          echo "$page" | grep -q "Opening StudyForge" && echo "redirect page: ok"
+          echo "$page" | grep -q "Opening Lessicon" && echo "redirect page: ok"
           target=$(curl -sf "$base/target.json?t=$(date +%s)" | jq -r .target)
           echo "redirect target: $target"
           probe=$(curl -s --max-time 20 "$target/__mobile")
           echo "app probe: $probe"
-          echo "$probe" | grep -q '"app":"studyforge"'
+          echo "$probe" | grep -q '"app":"lessicon"'
           scan=$(curl -s -o /dev/null --max-time 60 -w "%{http_code} %{redirect_url}" "$target/go/uptime-check")
           echo "scan: $scan"
           test "$scan" = "302 $target/?src=uptime-check"
