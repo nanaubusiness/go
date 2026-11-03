@@ -24,3 +24,15 @@ jobs:
           landing=$(curl -s -o /dev/null --max-time 90 -w "%{http_code}" "$target/?src=uptime-check")
           echo "landing: $landing"
           test "$landing" = 200
+      - name: Own domain -> www and sites hosts route right
+        run: |
+          set -eu
+          www=$(curl -s -o /dev/null --max-time 30 -w "%{http_code} %{redirect_url}" https://www.lessicon.com/create)
+          echo "www: $www"
+          test "$www" = "308 https://lessicon.com/create"
+          sites=$(curl -s -o /dev/null --max-time 30 -w "%{http_code} %{redirect_url}" https://sites.lessicon.com/login)
+          echo "sites host app page: $sites"
+          test "$sites" = "308 https://lessicon.com/login"
+          engine=$(curl -s -o /dev/null --max-time 30 -w "%{http_code}" https://sites.lessicon.com/sf-engine.js)
+          echo "sites host engine: $engine"
+          test "$engine" = 200
