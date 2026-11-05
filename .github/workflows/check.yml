@@ -27,9 +27,9 @@ jobs:
       - name: Own domain -> www and sites hosts route right
         run: |
           set -eu
-          www=$(curl -s -o /dev/null --max-time 30 -w "%{http_code} %{redirect_url}" https://www.lessicon.com/create)
+          www=$(curl -s -o /dev/null --max-time 30 -w "%{http_code} %{redirect_url}" https://www.lessicon.com/pricing)
           echo "www: $www"
-          test "$www" = "308 https://lessicon.com/create"
+          test "$www" = "308 https://lessicon.com/pricing"
           sites=$(curl -s -o /dev/null --max-time 30 -w "%{http_code} %{redirect_url}" https://sites.lessicon.com/login)
           echo "sites host app page: $sites"
           test "$sites" = "308 https://lessicon.com/login"
